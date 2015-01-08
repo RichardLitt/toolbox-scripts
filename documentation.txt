@@ -1,0 +1,144 @@
+This is the documentation for a couple of perl scripts that can be used to easily manipulate Toolbox files.
+
+The scripts have been created by Alexander Koenig at the Max Planck Institute for Psycholinguistics and may be used free of charge. 
+If you have questions, you can contact the author under Alexander.Koenig@mpi.nl
+
+
+All the five following scripts take a toolbox file as input. For their output they create a new toolbox file with the same name as the input file and the extension .new added. Please note, that these scripts only change the toolbox text files. The type database will not be changed!
+
+===================
+= change_label.pl =
+===================
+
+Function:
+  Changes the name of one marker in a toolbox file
+
+Usage:  
+  perl change_label.pl -file <input file> -old <old label> -new <new label>
+
+Options:
+
+  -f, --file   :       path to the file that should be used as input
+
+  -o, --old    :       name of the toolbox marker that should change
+
+  -n, --new    :       string that the marker should be changed into
+
+Example: 
+  perl change_label.pl --file /home/me/source.txt --old ref --new id
+
+
+========================== 
+= create_media_marker.pl =
+==========================
+
+Function:
+  Creates a new marker to link to an audio resource. This makes it possible to play (a segment of) the audio directly from toolbox.
+
+Usage:  
+  perl create_media_marker.pl -file <input file> -media <media file name> [-marker <marker name>]
+
+Options:
+
+ -f, --file   :       path to the file that should be used as input
+ 
+ --media      :       name of the media file that should be added
+
+ --marker     :       name of the toolbox marker that should be added, defaults to 'aud'
+
+Example: 
+  perl create_media_marker.pl --file /home/me/source.txt --media=foobar.wav --marker aud
+
+
+==========================
+= insert_empty_markers.pl =
+==========================
+
+Function:
+  Creates a number of new markers without values. You can specify if they should be added before or after a certain existing marker.
+  
+Usage:  
+  perl insert_empty_markers.pl -file <input file> -before <marker name> -after <marker name> -insert <list of marker names>
+
+Options:
+
+  -f, --file   :       path to the file that should be used as input
+
+  -a, --after  :       empty markers should be inserted after this marker (cannot be used at the same time as -before)
+
+  -b, --before :       empty markers should be inserted before this marker (cannot be used at the same time as -after)
+
+  -i, --insert :       list of marker names that should be inserted as empty markers (enclosed in '', separate multiple values by comma)
+
+Example: 
+  perl insert_empty_markers.pl --file /home/me/source.txt --after ref --insert 'my_marker1, my_marker2'
+
+
+====================
+= insert_prefix.pl =
+====================
+
+Function:
+  Adds a certain prefix to the value of one of the toolbox markers
+  
+Usage:  
+  perl insert_prefix.pl -file <input file> -prefix <prefix text> [-marker <marker name>]
+
+Options:
+
+  -f, --file   :       path to the file that should be used as input
+
+  -p, --prefix :       string that should be prefixed to the value of marker
+
+  -m, --marker :       name of the toolbox marker that should get the prefix, defaults to 'ref'
+
+Example: 
+  perl insert_prefix.pl --file /home/me/source.txt --prefix abc000_ --marker ref
+
+Changes
+ 
+\ref 001
+to
+\ref abc000_001
+
+==========================
+= handle_participants.pl =
+==========================   
+
+Function:
+  Restructures the marking of participants.
+  
+Usage:  
+  perl handle_participants.pl -file <input file> -marker <marker name> -participants <list of possible participant names>
+
+Options:
+
+  -f, --file   :             path to the file that should be used as input
+
+  -m, --marker :             name of the toolbox marker that should be inserted instead of the speaking participant, defaults to 'tx'
+
+  -p, --participants :       list of possible participant names (enclosed in '', separate multiple values by comma)
+
+Example: 
+  perl handle_participants.pl --file /home/me/source.txt --marker tx --participants 'Jeremy, Alex, Han'
+
+Changes
+
+\ELANParticipant 
+\Jeremy 
+\Alex blaha ads f a aaa a
+\Han 
+
+to
+
+\ELANParticipant Alex
+\tx blaha ads f a aaa a
+
+
+======================
+= enhance_toolbox.pl =
+======================
+
+Function:
+  This script is meant to perform all functions of the previous scripts at once in order. During its run it creates temporary files that will be deleted at the end. The output document has the same name as the input document. The input document will be backed up with the added extension .orig. The script does not take its parameters from the command line but uses a configuration file enhance_toolbox.conf instead. Examples and further descriptions can be found in the example config file.
+  
